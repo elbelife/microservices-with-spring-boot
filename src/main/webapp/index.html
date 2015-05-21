@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <link href="Styles/jqx.base.css" rel="stylesheet" type="text/css"/>
+    <link href="Styles/jqx.classic.css" rel="stylesheet" type="text/css"/>
+    <script src="Scripts/jqxcore.js" type="text/javascript"></script>
+    <script src="Scripts/jqxbuttons.js" type="text/javascript"></script>
+    <script src="Scripts/jqxdata.js" type="text/javascript"></script>
+    <script src="Scripts/jqxgrid.js" type="text/javascript"></script>
+    <script src="Scripts/jqxgrid.selection.js" type="text/javascript"></script>
+    <script src="Scripts/jqxmenu.js" type="text/javascript"></script>
+    <script src="Scripts/jqxscrollbar.js" type="text/javascript"></script>
+<script type="text/javascript">
+    function GetItemsData() {
+        try {
+            url = "http://localhost:8080/microservicesInfo",
+            source = {
+                datatype: "json",
+                datafields: [
+               { name: 'numberOfPendingMessage' },
+               { name: 'numberOfConsumers' },
+               { name: 'MessagesEngueued'}, 
+               { name: 'messagesDequeued'}] 
+               };
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                async: false,
+                url: "http://localhost:8080/microservicesInfo",
+                cache: false,
+                contentType: "application/json; charset=utf-8",
+                success: SucceedFunc,
+                data: "{}",
+                failure: FailedFunc
+            });
+        }
+        catch (e) {
+            alert('failed to call web service. Error: ' + e);
+        }
+    }
+
+    function SucceedFunc(data, status) {
+        debugger;
+        alert("Enter into Success");
+        source.localdata = data.d;
+        alert(source.localdata = data.d);
+
+        //Preparing the data for use
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        $("#jqxgrid").jqxGrid({
+            source: dataAdapter,
+            theme: 'classic',
+            columns: [
+           { text: 'Item ID', dataField: 'numberOfPendingMessage', width: 250 },
+           { text: 'Item Name', dataField: 'numberOfConsumers', width: 150 },
+           { text: 'Item Price', dataField: 'MessagesEngueued', width: 180 },
+           { text: 'Items On Hand', dataField: 'messagesDequeued', width: 180 }
+           ]
+        });
+    }
+
+    function FailedFunc(request, status, error) {
+        debugger;
+        alert("Error occured");
+    }
+</script>
+</head>
+
+<body onload="GetItemsData()">
+<div id="jqxgrid"></div>
+</body>
+</html>

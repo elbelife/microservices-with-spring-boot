@@ -18,6 +18,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import microservices.activemq.MatchItem;
 import microservices.activemq.MicroservicesInfo;
 
 import org.apache.activemq.ActiveMQConnection;
@@ -28,9 +29,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 
 import com.google.gson.Gson;
-
 
 @Configuration
 @EnableAutoConfiguration
@@ -48,26 +50,26 @@ public class App {
 
 	@RequestMapping("/matchItem")
 	@ResponseBody
-	String matchItem() {
+	public MatchItem matchItem() {
 		return getActiveMQQueue();
 	}
 
 	@RequestMapping("/microservicesInfo")
 	@ResponseBody
-	String microservicesInfo() {
+	public MicroservicesInfo microservicesInfo() {
 		return getMicroserviceInfo();
 	}
 	
-	public App(){
-		
-	};
+	public void addViewControllers(ViewControllerRegistry registry) {
+	    registry.addViewController("/").setViewName("forward:/index2.html");
+	}
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(App.class, args);
 
 	}
 
-	public static String getActiveMQQueue() {
+	public static MatchItem getActiveMQQueue() {
 
 		try {
 			connectionFactory = new ActiveMQConnectionFactory(
@@ -87,24 +89,25 @@ public class App {
 
 			TextMessage message = (TextMessage) consumer.receive();
 			if (null != message) {
-				String text = message.getText();
+				Gson gson = new Gson();
+				MatchItem matchItem = gson.fromJson(message.getText(), MatchItem.class);
 				System.out.println("MatchItem Info：" + message.getText());
 				session.close();
 				connection.close();
-				return text;
+				return matchItem;
 			} else {
-				return "No message!";
+				return null;
 			}
 			
 			
 		} catch (JMSException e) {
 			//Nothing to doing
 		}
-		return "";
+		return null;
 
 	}
 
-	private static String getMicroserviceInfo() {
+	private static MicroservicesInfo getMicroserviceInfo() {
 
 		MicroservicesInfo msInfo = new MicroservicesInfo();
 
@@ -166,10 +169,10 @@ public class App {
 			//noting to do
 		}
 
-		Gson gson = new Gson();
-		String json = gson.toJson(msInfo);
-		System.out.println("Microservices info：" + json);
-		return json;
+//		Gson gson = new Gson();
+//		String json = gson.toJson(msInfo);
+//		System.out.println("Microservices info：" + json);
+		return msInfo;
 	}
 
 }
