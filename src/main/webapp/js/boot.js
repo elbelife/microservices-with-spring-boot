@@ -1,34 +1,31 @@
-$(document).ready(function() {
-
-	setInterval(function() {
-
-		$.ajax({
-			url : "http://localhost:8080/microservicesInfo"
-		}).then(function(data) {
-			$('.greeting-id').html(data.numberOfPendingMessage);
-			$('.greeting-content').html(data.numberOfConsumers);
-		});
-
-	}, 5000)
+Highcharts.setOptions({
+	global : {
+		useUTC : false
+	}
 });
 
 $().ready(
 		function() {
+			$("#container").css("height", $(window).height());
 			var url = "microservicesInfo";
 			var options = {
 				chart : {
 					renderTo : "container",
-					type : 'area',
 					events : {
 						load : function() {
 							var series = this.series;
 							setInterval(function() {
 								$.getJSON(url, null, function(ds) {
-									series[0].data.push(ds.MessagesEngueued);
-									series[1].data.push(ds.numberOfPendingMessage);
-									series[2].data.push(ds.messagesDequeued);
+									var now = new Date();
+									series[0].addPoint([ now.getTime(),
+											ds.messagesEngueued ], true, true);
+									series[1].addPoint([ now.getTime(),
+											ds.numberOfPendingMessage ], true,
+											true);
+									series[2].addPoint([ now.getTime(),
+											ds.messagesDequeued ], true, true);
 								})
-							}, 5000);
+							}, 2000);
 						}
 					}
 				},
@@ -39,12 +36,8 @@ $().ready(
 					text : 'Message queue statics'
 				},
 				xAxis : {
-					categories : [ '1750', '1800', '1850', '1900', '1950',
-							'1999', '2050' ],
-					tickmarkPlacement : 'on',
-					title : {
-						enabled : false
-					}
+					type : 'datetime',
+					text : "Time"
 				},
 				yAxis : {
 					title : {
@@ -67,14 +60,27 @@ $().ready(
 				},
 				series : [ {
 					name : 'Messages Enqueued',
-					data : [ 502, 635, 809, 947, 1402, 3634, 5268 ]
+					data : generateSeries()
 				}, {
 					name : 'Pending Messages',
-					data : [ 106, 107, 111, 133, 221, 767, 1766 ]
+					data : generateSeries()
 				}, {
 					name : 'Messages Dequeued',
-					data : [ 163, 203, 276, 408, 547, 729, 628 ]
+					data : generateSeries()
 				} ]
 			}
 			new Highcharts.Chart(options);
 		})
+
+function generateSeries() {
+	// generate an array of random data
+	var data = [], time = (new Date()).getTime();
+
+	for (var i = -19; i <= 0; i += 1) {
+		data.push({
+			x : time + i * 1000,
+			y : null
+		});
+	}
+	return data;
+}
