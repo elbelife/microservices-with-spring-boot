@@ -1,12 +1,13 @@
 package microservices.activemq;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MatchItem {
 	
-	private String id;
+	private Long id;
 	
 	private String name;
 	
@@ -14,19 +15,19 @@ public class MatchItem {
 	
 	private String sportId;
 
-	private static AtomicReference<Long> currentTime = 
-            new AtomicReference<Long>(System.currentTimeMillis());
+//	private static AtomicReference<Long> currentTime = 
+//            new AtomicReference<Long>(System.currentTimeMillis());
 	
 	public MatchItem() {
-		id = currentTime.accumulateAndGet(System.currentTimeMillis(), 
-                (prev, next) -> next > prev ? next : prev + 1).toString();
-		
+//		id = currentTime.accumulateAndGet(System.currentTimeMillis(), 
+//                (prev, next) -> next > prev ? next : prev + 1).toString();
+		id = Calendar.getInstance(TimeZone.getDefault()).getTime().getTime();
 		name = "tennis";
 		start = new Date();
 		sportId = UUID.randomUUID().toString();
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -42,7 +43,7 @@ public class MatchItem {
 		return sportId;
 	}
 
-	public void setId(String pId) {
+	public void setId(Long pId) {
 		id = pId;
 	}
 
