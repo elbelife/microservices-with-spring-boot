@@ -88,7 +88,7 @@ public class App {
 			TextMessage message = (TextMessage) consumer.receive();
 			if (null != message) {
 				String text = message.getText();
-				System.out.println("Message：" + message.getText());
+				System.out.println("MatchItem Info：" + message.getText());
 				session.close();
 				connection.close();
 				return text;
@@ -168,7 +168,7 @@ public class App {
 
 		Gson gson = new Gson();
 		String json = gson.toJson(msInfo);
-		System.out.println("Message：" + json);
+		System.out.println("Microservices info：" + json);
 		return json;
 	}
 

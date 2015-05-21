@@ -21,10 +21,6 @@ import javax.jms.TextMessage;
  * 
  */
 
-
-
-
-
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -92,28 +88,27 @@ public class JmsReceiver {
 		MicroservicesInfo msInfo = new MicroservicesInfo();
 		for (@SuppressWarnings("rawtypes")
 		Enumeration e = reply.getMapNames(); e.hasMoreElements();) {
-			
+
 			String name = e.nextElement().toString();
-			
-			if(name.equals("enqueueCount")){
+
+			if (name.equals("enqueueCount")) {
 				msInfo.setMessagesEnqueued((Long) reply.getObject(name));
 			}
-			
-			if(name.equals("dequeueCount")){
+
+			if (name.equals("dequeueCount")) {
 				msInfo.setMessagesDequeued((Long) reply.getObject(name));
 			}
-			
-			if(name.equals("producerCount")){
+
+			if (name.equals("producerCount")) {
 				msInfo.setNumberOfConsumers((Long) reply.getObject(name));
 			}
-			
-			if(name.equals("dispatchCount")){
+
+			if (name.equals("dispatchCount")) {
 				msInfo.setNumberOfPendingMessage((Long) reply.getObject(name));
 			}
-//			System.out.println(name + "=" + reply.getObject(name));
-			
+
 		}
-		
+
 		Gson gson = new Gson();
 		String json = gson.toJson(msInfo);
 		return json;

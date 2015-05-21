@@ -4,8 +4,11 @@ public class MicroservicesInfo {
 
 
 	private Long numberOfPendingMessage;
+	
 	private Long numberOfConsumers;
+	
 	private Long MessagesEngueued;
+	
 	private Long messagesDequeued;
 
 
