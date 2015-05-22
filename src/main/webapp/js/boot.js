@@ -59,12 +59,15 @@ $().ready(
 					}
 				},
 				series : [ {
+					type: "area",
 					name : 'Messages Enqueued',
 					data : generateSeries()
 				}, {
+					type: "area",
 					name : 'Pending Messages',
 					data : generateSeries()
 				}, {
+					type: "area",
 					name : 'Messages Dequeued',
 					data : generateSeries()
 				} ]

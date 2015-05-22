@@ -66,7 +66,7 @@ public class MsgProducer {
 			start++;
 			// create Text message
 			TextMessage message = session.createTextMessage(getJsonMatchItem());
-			Thread.sleep(500);
+			Thread.sleep((int) Math.random()*100);
 			// Send message with producer
 			producer.send(message);
 			session.commit();
